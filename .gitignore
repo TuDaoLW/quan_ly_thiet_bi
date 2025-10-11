@@ -1,0 +1,41 @@
+# Bỏ qua thư mục chứa dữ liệu khởi tạo
+db/
+resource/
+mysql_data/
+
+# Bỏ qua tất cả file .sql ở mọi nơi
+*.sql
+
+qlytbi/HELP.md
+qlytbi/target/
+qlytbi/.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+qlytbi/.apt_generated
+qlytbi/.classpath
+qlytbi/.factorypath
+qlytbi/.project
+qlytbi/.settings
+qlytbi/.springBeans
+qlytbi/.sts4-cache
+
+### IntelliJ IDEA ###
+qlytbi/.idea
+qlytbi/*.iws
+qlytbi/*.iml
+qlytbi/*.ipr
+
+### NetBeans ###
+qlytbi/nbproject/private/
+qlytbi/nbbuild/
+qlytbi/dist/
+qlytbi/nbdist/
+qlytbi/.nb-gradle/
+qlytbi/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
