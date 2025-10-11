@@ -1,27 +1,31 @@
-Chắc chắn rồi! Dưới đây là file README.md đã được cập nhật hoàn chỉnh với hướng dẫn chi tiết về HTTPS. Bạn chỉ cần sao chép và sử dụng.
-
 Dự án Quản lý Thiết bị Phòng học (Java Thymeleaf)
 Đây là một ứng dụng web được xây dựng bằng Java Spring Boot và Thymeleaf, giúp quản lý hiệu quả các thiết bị trong các phòng học, phòng thí nghiệm và phòng đào tạo. Ứng dụng cung cấp giao diện người dùng hiện đại, dễ sử dụng cùng với một backend mạnh mẽ, bảo mật và có khả năng mở rộng.
 
 🖼️ Hình ảnh minh họa
-<table>
-<tr>
-<td align="center"><strong>Trang danh sách thiết bị</strong></td>
-<td align="center"><strong>Form thêm/sửa thiết bị</strong></td>
-</tr>
-<tr>
-<td><img src="./img/danh-sach-thiet-bi.png" alt="Trang danh sách thiết bị" /></td>
-<td><img src="./img/form-thiet-bi.png" alt="Form thêm/sửa thiết bị" /></td>
-</tr>
-<tr>
-<td align="center"><strong>Xem thiết bị theo phòng</strong></td>
-<td align="center"><strong>Thông báo lỗi validation</strong></td>
-</tr>
-<tr>
-<td><img src="./img/thiet-bi-theo-phong.png" alt="Xem thiết bị theo phòng" /></td>
-<td><img src="./img/validation-error.png" alt="Thông báo lỗi validation" /></td>
-</tr>
-</table>
+CERT
+<img src="./img/2.jpg" alt="" />
+LOGIN
+<img src="./img/1.jpg" alt="" />
+ADD
+<img src="./img/3.jpg" alt="" />
+EDIT 1
+<img src="./img/4.jpg" alt="" />
+SEARCH
+<img src="./img/6.jpg" alt="" />
+ROOM
+<img src="./img/a.jpg" alt="" />
+DEL 2
+<img src="./img/b.jpg" alt="" />
+INVALID PATH
+<img src="./img/c.jpg" alt="" />
+HOME LIST
+<img src="./img/d.jpg" alt="" />
+EDIT 2
+<img src="./img/e.jpg" alt="" />
+ADD 2
+<img src="./img/f.jpg" alt="" />
+ADD 1
+<img src="./img/g.jpg" alt="" />
 
 ✨ Tính năng nổi bật
 Quản lý Thiết bị Toàn diện: Thêm, sửa, xóa và xem chi tiết danh sách thiết bị.
