@@ -54,8 +54,8 @@
 
 1.  **Clone repository về máy:**
     ```bash
-    git clone <your-repository-url>
-    cd <your-project-directory>
+    git clone https://github.com/TuDaoLW/quan_ly_thiet_bi
+    cd quan_ly_thiet_bi
     ```
 
 2.  **Khởi chạy ứng dụng với Docker Compose:**
@@ -71,8 +71,7 @@
 
 1.  **Cài đặt MySQL:**
     -   Đảm bảo bạn đã cài đặt và khởi động MySQL server.
-    -   Tạo một database mới (ví dụ: `quanlythietbi`).
-    -   Chạy các script SQL trong project (nếu có) để tạo bảng và chèn dữ liệu mẫu.
+    -   Chạy các script SQL trong project (/db/init.sql) để tạo bảng và chèn dữ liệu mẫu.
 
 2.  **Cấu hình kết nối:**
     -   Mở file `src/main/resources/application.properties`.
