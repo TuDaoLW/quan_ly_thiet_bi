@@ -49,16 +49,16 @@ INSERT INTO NGUOI_DUNG (ho_ten, email, mat_khau, sdt, id_vai_tro) VALUES
 ('Phạm Thị Dung', 'phamdt@actvn.edu.vn', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '0934567890', 3);
 
 -- =====================================================
--- 3. BẢNG LOAI_PHONG (Room Types)
+-- 3. BẢNG loai_phong (Room Types)
 -- =====================================================
-CREATE TABLE LOAI_PHONG (
+CREATE TABLE loai_phong (
     id_loai_phong INT PRIMARY KEY AUTO_INCREMENT,
     ten_loai VARCHAR(50) NOT NULL UNIQUE,
     mo_ta TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dữ liệu mẫu loại phòng
-INSERT INTO LOAI_PHONG (ten_loai, mo_ta) VALUES
+INSERT INTO loai_phong (ten_loai, mo_ta) VALUES
 ('Phòng học thường', 'Phòng học lý thuyết, giảng dạy thông thường'),
 ('Phòng thí nghiệm', 'Phòng thực hành, thí nghiệm với thiết bị chuyên dụng'),
 ('Phòng đào tạo', 'Phòng dành cho các khóa đào tạo, có kế hoạch học tập');
@@ -76,7 +76,7 @@ CREATE TABLE phong_hoc (
     trang_thai ENUM('Trống', 'Đang sử dụng', 'Bảo trì') DEFAULT 'Trống',
     mo_ta TEXT,
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_loai_phong) REFERENCES LOAI_PHONG(id_loai_phong),
+    FOREIGN KEY (id_loai_phong) REFERENCES loai_phong(id_loai_phong),
     INDEX idx_ma_phong (ma_phong),
     INDEX idx_trang_thai (trang_thai),
     INDEX idx_loai_phong (id_loai_phong)
@@ -93,9 +93,9 @@ INSERT INTO phong_hoc (ma_phong, ten_phong, suc_chua, vi_tri, id_loai_phong, tra
 ('C302', 'Phòng đào tạo C302', 38, 'Tầng 3, Nhà C', 3, 'Đang sử dụng', 'Phòng đang có khóa học');
 
 -- =====================================================
--- 5. BẢNG PHONG_TB (Lab Rooms)
+-- 5. BẢNG phong_tb (Lab Rooms)
 -- =====================================================
-CREATE TABLE PHONG_TB (
+CREATE TABLE phong_tb (
     id_phong_tb INT PRIMARY KEY AUTO_INCREMENT,
     id_phong INT UNIQUE NOT NULL,
     so_sinh_vien_toi_da INT,
@@ -104,14 +104,14 @@ CREATE TABLE PHONG_TB (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dữ liệu mẫu phòng thí nghiệm
-INSERT INTO PHONG_TB (id_phong, so_sinh_vien_toi_da, loai_thiet_bi) VALUES
+INSERT INTO phong_tb (id_phong, so_sinh_vien_toi_da, loai_thiet_bi) VALUES
 (3, 30, 'Bếp điện, ống nghiệm, cân điện tử, tủ hút'),
 (4, 35, 'Máy đo dao động, nguồn điện, ampe kế, vôn kế');
 
 -- =====================================================
--- 6. BẢNG PHONG_DT (Training Rooms)
+-- 6. BẢNG phong_dt (Training Rooms)
 -- =====================================================
-CREATE TABLE PHONG_DT (
+CREATE TABLE phong_dt (
     id_phong_dt INT PRIMARY KEY AUTO_INCREMENT,
     id_phong INT UNIQUE NOT NULL,
     chuyen_nganh VARCHAR(100),
@@ -119,7 +119,7 @@ CREATE TABLE PHONG_DT (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dữ liệu mẫu phòng đào tạo
-INSERT INTO PHONG_DT (id_phong, chuyen_nganh) VALUES
+INSERT INTO phong_dt (id_phong, chuyen_nganh) VALUES
 (5, 'Công nghệ thông tin'),
 (6, 'Kế toán - Tài chính');
 
@@ -163,7 +163,7 @@ CREATE TABLE KE_HOACH_HOC_TAP (
     ngay_ket_thuc DATE,
     file_excel_url VARCHAR(500),
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_phong_dt) REFERENCES PHONG_DT(id_phong_dt) ON DELETE CASCADE,
+    FOREIGN KEY (id_phong_dt) REFERENCES phong_dt(id_phong_dt) ON DELETE CASCADE,
     INDEX idx_ngay_bat_dau (ngay_bat_dau),
     INDEX idx_phong_dt (id_phong_dt)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -294,7 +294,7 @@ BEGIN
         lp.ten_loai,
         ph.trang_thai
     FROM phong_hoc ph
-    JOIN LOAI_PHONG lp ON ph.id_loai_phong = lp.id_loai_phong
+    JOIN loai_phong lp ON ph.id_loai_phong = lp.id_loai_phong
     WHERE ph.trang_thai = 'Trống'
         AND ph.id_phong NOT IN (
             SELECT id_phong
@@ -335,9 +335,9 @@ SELECT
     ptb.loai_thiet_bi,
     pdt.chuyen_nganh
 FROM phong_hoc ph
-JOIN LOAI_PHONG lp ON ph.id_loai_phong = lp.id_loai_phong
-LEFT JOIN PHONG_TB ptb ON ph.id_phong = ptb.id_phong
-LEFT JOIN PHONG_DT pdt ON ph.id_phong = pdt.id_phong;
+JOIN loai_phong lp ON ph.id_loai_phong = lp.id_loai_phong
+LEFT JOIN phong_tb ptb ON ph.id_phong = ptb.id_phong
+LEFT JOIN phong_dt pdt ON ph.id_phong = pdt.id_phong;
 
 -- View: Lịch sử đăng ký phòng
 CREATE VIEW v_lich_su_dang_ky AS

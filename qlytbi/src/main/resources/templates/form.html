@@ -7,44 +7,124 @@
 <body>
     <div th:fragment="content">
         <h2 class="mb-4" th:text="${thietbi.idThietBi} ? 'Sửa thiết bị' : 'Thêm thiết bị'"></h2>
-        <form th:action="@{/thietbi/save}" th:object="${thietbi}" method="post">
+        
+        <!-- Hiển thị thông báo lỗi chung -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <form th:action="@{/thietbi/save}" th:object="${thietbi}" method="post" novalidate>
             <input type="hidden" th:field="*{idThietBi}">
             <div class="mb-3">
                 <label for="tenThietBi" class="form-label">Tên thiết bị</label>
-                <input type="text" th:field="*{tenThietBi}" class="form-control" id="tenThietBi" required>
+                <input type="text" th:field="*{tenThietBi}" class="form-control" id="tenThietBi" 
+                       required minlength="3" maxlength="100">
+                <div class="text-danger" th:if="${#fields.hasErrors('tenThietBi')}" 
+                     th:errors="*{tenThietBi}"></div>
             </div>
             <div class="mb-3">
                 <label for="maThietBi" class="form-label">Mã thiết bị</label>
-                <input type="text" th:field="*{maThietBi}" class="form-control" id="maThietBi" required>
+                <input type="text" th:field="*{maThietBi}" class="form-control" id="maThietBi" 
+                       required pattern="[A-Za-z0-9-]+">
+                <div class="text-danger" th:if="${#fields.hasErrors('maThietBi')}" 
+                     th:errors="*{maThietBi}"></div>
             </div>
             <div class="mb-3">
                 <label for="phongHoc" class="form-label">Phòng học</label>
-                <select th:field="*{phongHoc}" class="form-select" id="phongHoc" required>
-                    <option value="">Chọn phòng</option>
+                <select th:field="*{phongHoc}" class="form-select" id="phongHoc" onchange="toggleNgayLapDat()">
+                    <option value="">Không chọn (gán vào kho)</option>
                     <option th:each="phong : ${phongs}" 
                             th:value="${phong.idPhong}" 
-                            th:text="${phong.tenPhong}"></option>
+                            th:text="${phong.tenPhong} + ' (' + ${phong.loaiPhong.tenLoai} + ')'" 
+                            th:attr="data-ma-phong=${phong.maPhong}"></option>
                 </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('phongHoc')}" 
+                     th:errors="*{phongHoc}"></div>
             </div>
             <div class="mb-3">
                 <label for="soLuong" class="form-label">Số lượng</label>
-                <input type="number" th:field="*{soLuong}" class="form-control" id="soLuong" required>
+                <input type="number" th:field="*{soLuong}" class="form-control" id="soLuong" 
+                       required min="1">
+                <div class="text-danger" th:if="${#fields.hasErrors('soLuong')}" 
+                     th:errors="*{soLuong}"></div>
             </div>
             <div class="mb-3">
                 <label for="tinhTrang" class="form-label">Tình trạng</label>
-                <input type="text" th:field="*{tinhTrang}" class="form-control" id="tinhTrang">
+                <select th:field="*{tinhTrang}" class="form-select" id="tinhTrang" required>
+                    <option value="Tốt">Tốt</option>
+                    <option value="Cần bảo trì">Cần bảo trì</option>
+                    <option value="Hỏng">Hỏng</option>
+                </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('tinhTrang')}" 
+                     th:errors="*{tinhTrang}"></div>
             </div>
-            <div class="mb-3">
+            <div class="mb-3" id="ngayLapDatContainer">
                 <label for="ngayLapDat" class="form-label">Ngày lắp đặt</label>
                 <input type="date" th:field="*{ngayLapDat}" class="form-control" id="ngayLapDat">
+                <div class="text-danger" th:if="${#fields.hasErrors('ngayLapDat')}" 
+                     th:errors="*{ngayLapDat}"></div>
             </div>
             <div class="mb-3">
                 <label for="moTa" class="form-label">Mô tả</label>
-                <textarea th:field="*{moTa}" class="form-control" id="moTa" rows="4"></textarea>
+                <textarea th:field="*{moTa}" class="form-control" id="moTa" rows="4" 
+                          maxlength="500"></textarea>
+                <div class="text-danger" th:if="${#fields.hasErrors('moTa')}" 
+                     th:errors="*{moTa}"></div>
             </div>
             <button type="submit" class="btn btn-primary">Lưu</button>
             <a th:href="@{/thietbi}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
+
+    <script>
+        function toggleNgayLapDat() {
+            const phongSelect = document.getElementById('phongHoc');
+            const ngayLapDatContainer = document.getElementById('ngayLapDatContainer');
+            const ngayLapDatInput = document.getElementById('ngayLapDat');
+            const selectedOption = phongSelect.options[phongSelect.selectedIndex];
+            const maPhong = selectedOption ? selectedOption.getAttribute('data-ma-phong') : '';
+
+            if (maPhong === 'K00' || !selectedOption.value) {
+                ngayLapDatInput.disabled = true;
+                ngayLapDatInput.value = '';
+                ngayLapDatContainer.style.display = 'none';
+                ngayLapDatInput.required = false;
+            } else {
+                ngayLapDatInput.disabled = false;
+                ngayLapDatContainer.style.display = 'block';
+                ngayLapDatInput.required = true;
+                const today = new Date().toISOString().split('T')[0];
+                ngayLapDatInput.setAttribute('max', today);
+            }
+        }
+
+        window.onload = toggleNgayLapDat;
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const maThietBi = document.getElementById('maThietBi').value;
+            const soLuong = document.getElementById('soLuong').value;
+            const ngayLapDat = document.getElementById('ngayLapDat').value;
+            const phongSelect = document.getElementById('phongHoc');
+            const maPhong = phongSelect.options[phongSelect.selectedIndex]?.getAttribute('data-ma-phong');
+
+            if (!/^[A-Za-z0-9-]+$/.test(maThietBi)) {
+                alert('Mã thiết bị chỉ được chứa chữ cái, số hoặc dấu gạch ngang!');
+                event.preventDefault();
+                return;
+            }
+
+            if (soLuong < 1) {
+                alert('Số lượng phải lớn hơn 0!');
+                event.preventDefault();
+                return;
+            }
+
+            if (maPhong !== 'K00' && phongSelect.value && !ngayLapDat) {
+                alert('Vui lòng nhập ngày lắp đặt khi chọn phòng học!');
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
 </body>
 </html>
