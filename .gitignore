@@ -1,10 +1,7 @@
 # Bỏ qua thư mục chứa dữ liệu khởi tạo
-db/
 resource/
 mysql_data/
 
-# Bỏ qua tất cả file .sql ở mọi nơi
-*.sql
 
 qlytbi/HELP.md
 qlytbi/target/

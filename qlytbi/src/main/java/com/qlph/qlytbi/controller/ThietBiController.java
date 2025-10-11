@@ -3,6 +3,8 @@ package com.qlph.qlytbi.controller;
 import com.qlph.qlytbi.entity.ThietBi;
 import com.qlph.qlytbi.repository.PhongHocRepository;
 import com.qlph.qlytbi.service.ThietBiService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/thietbi")
 public class ThietBiController {
 
+    private static final Logger log = LoggerFactory.getLogger(ThietBiController.class);
+
     @Autowired
     private ThietBiService service;
 
@@ -22,9 +26,12 @@ public class ThietBiController {
 
     @GetMapping
     public String list(Model model, @RequestParam(value = "keyword", required = false) String keyword) {
+        log.info("===> [Controller] /thietbi called, keyword={}", keyword);
         List<ThietBi> list = (keyword == null || keyword.isEmpty())
                 ? service.getAll()
                 : service.search(keyword);
+
+        log.info("===> [Controller] Retrieved {} thiết bị từ DB", list.size());
         model.addAttribute("thietbis", list);
         model.addAttribute("keyword", keyword);
         return "index";
@@ -32,6 +39,7 @@ public class ThietBiController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
+        log.info("===> [Controller] /thietbi/add called");
         model.addAttribute("thietbi", new ThietBi());
         model.addAttribute("phongs", phongRepo.findAll());
         return "form";
@@ -39,12 +47,14 @@ public class ThietBiController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute ThietBi tb) {
+        log.info("===> [Controller] Saving thiết bị: {}", tb);
         service.save(tb);
         return "redirect:/thietbi";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
+        log.info("===> [Controller] Editing thiết bị id={}", id);
         model.addAttribute("thietbi", service.getById(id));
         model.addAttribute("phongs", phongRepo.findAll());
         return "form";
@@ -52,6 +62,7 @@ public class ThietBiController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
+        log.warn("===> [Controller] Deleting thiết bị id={}", id);
         service.delete(id);
         return "redirect:/thietbi";
     }
