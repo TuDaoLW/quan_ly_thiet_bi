@@ -8,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Service
 public class ThietBiService {
@@ -37,28 +39,46 @@ public class ThietBiService {
 
     public ThietBi save(ThietBi tb) {
         log.info("===> [Service] Saving thiết bị: {}", tb);
+        // Làm sạch dữ liệu
+        tb.setTenThietBi(Jsoup.clean(tb.getTenThietBi(), Safelist.basic()));
+        tb.setMoTa(Jsoup.clean(tb.getMoTa() != null ? tb.getMoTa() : "", Safelist.basic()));
         // Kiểm tra tính duy nhất của maThietBi
         Optional<ThietBi> existing = repo.findByMaThietBi(tb.getMaThietBi());
         if (existing.isPresent() && !existing.get().getIdThietBi().equals(tb.getIdThietBi())) {
             throw new IllegalArgumentException("Mã thiết bị đã tồn tại!");
         }
-
-        // Nếu không chọn phòng học hoặc chọn phòng "Kho" (ma_phong = 'K00'), đặt ngayLapDat = null
         if (tb.getPhongHoc() == null || tb.getPhongHoc().getIdPhong() == null || 
             "K00".equals(tb.getPhongHoc().getMaPhong())) {
             PhongHoc kho = phongHocRepo.findByMaPhong("K00");
             if (kho == null) {
-                throw new RuntimeException("Phòng kho với mã K00 không tồn tại!");
+                throw new IllegalArgumentException("Phòng kho với mã K00 không tồn tại!");
             }
             tb.setPhongHoc(kho);
-            tb.setNgayLapDat(null); // Đặt ngày lắp đặt là null cho kho
+            tb.setNgayLapDat(null);
         }
-        return repo.save(tb);
+        try {
+            return repo.save(tb);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Lỗi lưu dữ liệu: Mã thiết bị đã tồn tại hoặc dữ liệu không hợp lệ!");
+        }
     }
 
     public void delete(Integer id) {
         log.warn("===> [Service] Deleting thiết bị id={}", id);
-        repo.deleteById(id);
+        try {
+            if (!repo.existsById(id)) {
+                log.error("===> [Service] Thiết bị id={} không tồn tại", id);
+                throw new IllegalArgumentException("Thiết bị không tồn tại");
+            }
+            repo.deleteById(id);
+            log.info("===> [Service] Thiết bị id={} deleted successfully", id);
+        } catch (IllegalArgumentException e) {
+            log.error("===> [Service] Error: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("===> [Service] Unexpected error deleting thiết bị id={}: {}", id, e.getMessage(), e);
+            throw new IllegalArgumentException("Lỗi khi xóa thiết bị");
+        }
     }
 
     public List<ThietBi> search(String keyword) {
