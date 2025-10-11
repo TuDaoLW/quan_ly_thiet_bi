@@ -67,7 +67,7 @@
    cd quan_ly_thiet_bi
    ```
 
-2. **Tạo chứng chỉ HTTPS (Self-signed Certificate)**:  
+2. **(Tùy chọn)Tạo chứng chỉ HTTPS (Self-signed Certificate)**:  
    Chạy lệnh sau từ thư mục gốc của dự án để tạo file `keystore.p12` và đặt nó vào đúng vị trí mà Dockerfile sẽ sử dụng.
 
    ```bash
@@ -76,6 +76,7 @@
 
    Khi được hỏi, hãy nhập mật khẩu cho keystore (ví dụ: `elcom@123`).  
    **Lưu ý**: Mật khẩu này phải khớp với mật khẩu trong file `application.properties`.
+   **CÓ THỂ BỎ QUA VÀ SỬ DỤNG KEYSTORE ĐƯỢC TẠO SẴN TRONG REPO NÀY**
 
 3. **Khởi chạy ứng dụng với Docker Compose**:
 
@@ -89,6 +90,12 @@
    - Khởi động ứng dụng Spring Boot trên cổng **8443** với HTTPS.
 
 4. **Truy cập ứng dụng**:  
+   Lấy mật khẩu đăng nhập cho 'user'
+
+   ```bash
+   docker logs qlytbi-app | grep password
+   ```
+
    Mở trình duyệt và truy cập vào địa chỉ:  
    [https://localhost:8443](https://localhost:8443)
 
@@ -119,13 +126,14 @@ Vì bạn đang sử dụng chứng chỉ tự ký, trình duyệt sẽ hiển t
      server.ssl.key-store-password=elcom@123
      server.ssl.key-alias=qlytbi
      ```
-
+    **CÓ THỂ BỎ QUA VÀ SỬ DỤNG KEYSTORE ĐƯỢC TẠO SẴN TRONG REPO NÀY**
 4. **Build và chạy ứng dụng**:  
    Mở terminal tại thư mục `qlytbi` và chạy lệnh Maven:
 
    ```bash
-   mvn spring-boot:run
+   mvn spring-boot:run > output.log 2>&1 
    ```
+   Xem log và lấy mật khẩu đăng nhập cho 'user'
 
 5. **Truy cập ứng dụng**:  
    Mở trình duyệt và truy cập: [https://localhost:8443](https://localhost:8443).  
@@ -144,8 +152,6 @@ Vì bạn đang sử dụng chứng chỉ tự ký, trình duyệt sẽ hiển t
 | Xóa thiết bị            | POST       | `/thietbi/delete/{id}`           | Xóa thiết bị khỏi hệ thống (có xác nhận từ người dùng).                   |
 | Xem theo phòng          | GET        | `/thietbi/phong/{idPhong}`       | Hiển thị danh sách thiết bị của một phòng học cụ thể.                     |
 
-- **Xuất sang Trang tính**: (Chưa được mô tả chi tiết trong yêu cầu, có thể bổ sung sau).
-
 ### 2. Validation và Ràng buộc
 
 - **Tên thiết bị**:  
@@ -157,7 +163,7 @@ Vì bạn đang sử dụng chứng chỉ tự ký, trình duyệt sẽ hiển t
 - **Tình trạng**:  
   - Bắt buộc, phải là một trong các giá trị: "Tốt", "Cần bảo trì", "Hỏng".
 - **Ngày lắp đặt**:  
-  - Bắt buộc khi thiết bị được gán cho một phòng học (khác kho).  
+  - Bắt buộc khi thiết bị được gán cho một phòng học (khác Kho).  
   - Không được là một ngày trong tương lai.  
   - Để trống (`NULL`) nếu thiết bị nằm trong kho (K00).
 
