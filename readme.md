@@ -60,10 +60,15 @@
 
 2.  **Khởi chạy ứng dụng với Docker Compose:**
     ```bash
-    docker-compose up --build -d
+    docker compose up --build -d
+    #hoặc docker-compose up --build -d, tùy phiên bản bạn đã cài đặt
     ```
     Lệnh này sẽ tự động build image cho ứng dụng Spring Boot và khởi tạo một container MySQL với dữ liệu mẫu.
 
+    Lấy mật khẩu được tạo ngẫu nhiên cho tài khoản "user"
+    ```bash
+    docker logs qlytbi-app | grep password
+    ```
 3.  **Truy cập ứng dụng:**
     Mở trình duyệt và truy cập vào địa chỉ: `http://localhost:8080/thietbi`
 
@@ -80,9 +85,9 @@
 3.  **Build và chạy ứng dụng:**
     Sử dụng Maven để build và khởi chạy ứng dụng:
     ```bash
-    mvn spring-boot:run
+    mvn spring-boot:run > output.log 2>&1
     ```
-
+    Truy cập log và lấy mật khẩu được tạo ngẫu nhiên cho tài khoản "user"
 4.  **Truy cập ứng dụng:**
     Mở trình duyệt và truy cập vào địa chỉ: `http://localhost:8080/thietbi`
 
@@ -96,7 +101,7 @@
 | **Form thêm mới** | `GET` | `/thietbi/add` | Hiển thị form để nhập thông tin thiết bị mới. |
 | **Lưu thiết bị** | `POST` | `/thietbi/save` | Lưu thông tin thiết bị mới hoặc cập nhật thiết bị đã có. |
 | **Form chỉnh sửa** | `GET` | `/thietbi/edit/{id}` | Lấy thông tin thiết bị theo `id` và hiển thị trên form. |
-| **Xóa thiết bị** | `GET` | `/thietbi/delete/{id}` | Xóa thiết bị khỏi hệ thống (có xác nhận từ người dùng). |
+| **Xóa thiết bị** | `POST` | `/thietbi/delete/{id}` | Xóa thiết bị khỏi hệ thống (có xác nhận từ người dùng). |
 | **Xem theo phòng** | `GET` | `/thietbi/phong/{idPhong}` | Hiển thị danh sách thiết bị của một phòng học cụ thể. |
 
 ### 2. Validation và Ràng buộc
