@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<body>
+<div class="d-flex justify-content-between mb-3">
+    <form class="d-flex" method="get" th:action="@{/thietbi}">
+        <input class="form-control me-2" type="search" placeholder="Tìm thiết bị" name="keyword" th:value="${keyword}">
+        <button class="btn btn-outline-primary" type="submit">Tìm</button>
+    </form>
+    <a class="btn btn-success" th:href="@{/thietbi/add}">+ Thêm thiết bị</a>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Mã thiết bị</th>
+            <th>Tên thiết bị</th>
+            <th>Phòng học</th>
+            <th>Số lượng</th>
+            <th>Tình trạng</th>
+            <th>Ngày lắp đặt</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="tb : ${thietbis}">
+            <td th:text="${tb.idThietBi}"></td>
+            <td th:text="${tb.maThietBi}"></td>
+            <td th:text="${tb.tenThietBi}"></td>
+            <td th:text="${tb.phongHoc.tenPhong}"></td>
+            <td th:text="${tb.soLuong}"></td>
+            <td th:text="${tb.tinhTrang}"></td>
+            <td th:text="${#dates.format(tb.ngayLapDat, 'dd/MM/yyyy')}"></td>
+            <td>
+                <a class="btn btn-sm btn-warning" th:href="@{'/thietbi/edit/' + ${tb.idThietBi}}">Sửa</a>
+                <a class="btn btn-sm btn-danger" th:href="@{'/thietbi/delete/' + ${tb.idThietBi}}"
+                   onclick="return confirm('Bạn có chắc muốn xóa thiết bị này?');">Xóa</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

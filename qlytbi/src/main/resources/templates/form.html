@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<body>
+<h4 th:text="${thietbi.idThietBi == null ? 'Thêm thiết bị mới' : 'Chỉnh sửa thiết bị'}"></h4>
+<form th:action="@{/thietbi/save}" method="post" th:object="${thietbi}" class="mt-3">
+    <input type="hidden" th:field="*{idThietBi}">
+
+    <div class="mb-3">
+        <label>Phòng học</label>
+        <select class="form-select" th:field="*{phongHoc}">
+            <option th:each="ph : ${phongs}" th:value="${ph}" th:text="${ph.tenPhong}"></option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Tên thiết bị</label>
+        <input type="text" class="form-control" th:field="*{tenThietBi}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Mã thiết bị</label>
+        <input type="text" class="form-control" th:field="*{maThietBi}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Số lượng</label>
+        <input type="number" class="form-control" th:field="*{soLuong}">
+    </div>
+
+    <div class="mb-3">
+        <label>Tình trạng</label>
+        <select class="form-select" th:field="*{tinhTrang}">
+            <option value="Tốt">Tốt</option>
+            <option value="Cần bảo trì">Cần bảo trì</option>
+            <option value="Hỏng">Hỏng</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Ngày lắp đặt</label>
+        <input type="date" class="form-control" th:field="*{ngayLapDat}">
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea class="form-control" th:field="*{moTa}" rows="3"></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Lưu</button>
+    <a class="btn btn-secondary" th:href="@{/thietbi}">Hủy</a>
+</form>
+</body>
+</html>
