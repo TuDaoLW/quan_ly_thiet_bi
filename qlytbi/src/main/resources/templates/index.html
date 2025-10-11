@@ -22,6 +22,8 @@
                 <span th:case="'Thiet bi khong ton tai'">Thiết bị không tồn tại</span>
                 <span th:case="'Phong khong ton tai'">Phòng không tồn tại</span>
                 <span th:case="'Loi khi xoa thiet bi'">Lỗi khi xóa thiết bị</span>
+                <span th:case="'Duong dan khong hop le'">Đường dẫn không hợp lệ</span>
+                <span th:case="'Khong co quyen truy cap'">Không có quyền truy cập</span>
                 <span th:case="*"><span th:text="${param.error}"></span></span>
             </span>
         </div>
@@ -32,6 +34,19 @@
                 <input type="text" name="keyword" class="form-control" 
                        th:value="${keyword}" placeholder="Tìm kiếm thiết bị...">
                 <button type="submit" class="btn btn-primary">Tìm</button>
+            </div>
+        </form>
+
+        <!-- Dropdown chọn phòng -->
+        <form id="phongForm" method="get" class="mb-4">
+            <div class="input-group">
+                <select id="phongHoc" class="form-select" onchange="if(this.value) window.location.href='/thietbi/phong/' + this.value">
+                    <option value="" th:selected="${idPhong == null}">Chọn phòng học</option>
+                    <option th:each="phong : ${phongs}" 
+                            th:value="${phong.idPhong}" 
+                            th:text="${phong.tenPhong} + ' (' + ${phong.loaiPhong.tenLoai} + ')'"
+                            th:selected="${phong.idPhong == idPhong}"></option>
+                </select>
             </div>
         </form>
 
@@ -56,8 +71,8 @@
                     <td th:text="${tb.idThietBi}"></td>
                     <td th:text="${tb.tenThietBi}"></td>
                     <td th:text="${tb.maThietBi}"></td>
-                    <td th:text="${tb.phongHoc.tenPhong}"></td>
-                    <td th:text="${tb.phongHoc.loaiPhong.tenLoai}"></td>
+                    <td th:text="${tb.phongHoc?.tenPhong}"></td>
+                    <td th:text="${tb.phongHoc?.loaiPhong?.tenLoai}"></td>
                     <td th:text="${tb.soLuong}"></td>
                     <td th:text="${tb.tinhTrang}"></td>
                     <td th:text="${#dates.format(tb.ngayLapDat, 'dd/MM/yyyy')}"></td>

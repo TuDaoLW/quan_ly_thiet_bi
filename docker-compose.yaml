@@ -14,4 +14,26 @@ services:
       - ./mysql_data:/var/lib/mysql
       - ./db:/docker-entrypoint-initdb.d
       - ./db/mysql.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - qlytbi-network
 
+  app:
+    build:
+      context: ./qlytbi/
+      dockerfile: Dockerfile
+    container_name: qlytbi-app
+    restart: always
+    environment:
+      - DB_URL=jdbc:mysql://mysql:3306/quan_ly_phong_hoc?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+      - DB_USERNAME=tudao
+      - DB_PASSWORD=elcom@dtu
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - qlytbi-network
+
+networks:
+  qlytbi-network:
+    driver: bridge

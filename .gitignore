@@ -2,7 +2,7 @@
 resource/
 mysql_data/
 
-
+qlytbi/output.log
 qlytbi/HELP.md
 qlytbi/target/
 qlytbi/.mvn/wrapper/maven-wrapper.jar

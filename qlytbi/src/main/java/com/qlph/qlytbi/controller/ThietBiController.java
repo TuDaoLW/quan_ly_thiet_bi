@@ -40,6 +40,7 @@ public class ThietBiController {
         log.info("===> [Controller] Retrieved {} thiết bị từ DB", list.size());
         model.addAttribute("thietbis", list);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("idPhong", null); // Đặt idPhong là null khi hiển thị tất cả thiết bị
         return "index";
     }
 
@@ -111,16 +112,31 @@ public class ThietBiController {
     }
 
     @GetMapping("/phong/{idPhong}")
-    public String listByPhong(@PathVariable Integer idPhong, Model model) {
+    public String listByPhong(@PathVariable String idPhong, Model model) {
         log.info("===> [Controller] /thietbi/phong/{} called", idPhong);
-        PhongHoc phong = phongRepo.findById(idPhong).orElse(null);
-        if (phong == null) {
-            log.error("===> [Controller] Phòng id={} không tồn tại", idPhong);
-            return "redirect:/thietbi?error=Phong khong ton tai";
+        try {
+            Integer parsedId = idPhong == null || idPhong.isEmpty() ? 0 : Integer.parseInt(idPhong);
+            if (parsedId == 0) {
+                log.info("===> [Controller] No phòng selected, showing all thiết bị");
+                model.addAttribute("thietbis", service.getAll());
+                model.addAttribute("phong", null);
+                model.addAttribute("idPhong", null);
+                return "index";
+            }
+            PhongHoc phong = phongRepo.findById(parsedId).orElse(null);
+            if (phong == null) {
+                log.error("===> [Controller] Phòng id={} không tồn tại", parsedId);
+                return "redirect:/thietbi?error=Phong khong ton tai";
+            }
+            List<ThietBi> list = service.getByPhongHoc(parsedId);
+            model.addAttribute("thietbis", list);
+            model.addAttribute("phong", phong);
+            model.addAttribute("idPhong", parsedId);
+            return "phong_thietbi";
+        } catch (NumberFormatException e) {
+            log.error("===> [Controller] Invalid idPhong format: {}", idPhong);
+            return "redirect:/thietbi?error=Duong dan khong hop le";
         }
-        List<ThietBi> list = service.getByPhongHoc(idPhong);
-        model.addAttribute("thietbis", list);
-        model.addAttribute("phong", phong);
-        return "phong_thietbi";
     }
 }
+
