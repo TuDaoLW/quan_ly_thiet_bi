@@ -1,0 +1,65 @@
+services:
+  # 1. The MySQL Database (copied from your original)
+  mysql:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: elcom@123
+      MYSQL_DATABASE: quan_ly_phong_hoc
+      MYSQL_USER: tudao
+      MYSQL_PASSWORD: elcom@dtu
+    ports:
+      - "3306:3306" # We keep this for external tools if needed
+    volumes:
+      # This is why we need to copy your 'db' folder here
+      # We'll do that after this setup
+      - ./db:/docker-entrypoint-initdb.d
+      - ./db/mysql.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - qlytbi-network
+
+  # 2. The PHP Service (replaces your 'app' service)
+  php:
+    build:
+      context: ./php # Use the Dockerfile in our './php' folder
+    container_name: qlytbi-php
+    restart: always
+    environment:
+      # Environment variables for our PHP app to read
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: quan_ly_phong_hoc
+      DB_USER: tudao
+      DB_PASSWORD: elcom@dtu
+    volumes:
+      - ./src:/var/www/html # Share our code with the PHP container
+    networks:
+      - qlytbi-network
+    depends_on:
+      - mysql
+
+  # 3. The Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: qlytbi-web
+    restart: always
+    ports:
+      # We now map port 8443 on our computer to port 443 (HTTPS) in the container
+      - "8443:443"
+      # (Optional) You can also map port 8080 to 80 for the redirect to work
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      # --- ADD THIS LINE ---
+      # This line gives the Nginx container read-only access to our new SSL certs
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    networks:
+      - qlytbi-network
+    depends_on:
+      - php
+
+networks:
+  qlytbi-network:
+    driver: bridge
