@@ -36,8 +36,8 @@
 1.  **Clone repository về máy**:
 
     ```bash
-    git clone [URL-CUA-REPO-PHP-CUA-BAN]
-    cd [TEN-THU-MUC-DU-AN]
+    git clone https://github.com/TuDaoLW/quan_ly_thiet_bi --branch php_ssl
+    cd quan_ly_thiet_bi
     ```
 
 2.  **(Tùy chọn) Tạo chứng chỉ HTTPS (Self-signed Certificate)**:
